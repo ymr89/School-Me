@@ -85,7 +85,7 @@ The first step in creating your app is to create the web app via the [Azure Port
 
 The next 3 sections describe how to proceed with the web app development under 3 different environments:
 
-+	[Windows, with Python Tools for Visual Studio](https://github.com/ymr89/MsBlog/blob/master/WindowsVS.md)
++	[Windows, with Python Tools for Visual Studio](https://github.com/ymr89/School-Me/blob/master/WindowsVS.md)
 +	[Windows, with command line](https://github.com/ymr89/MsBlog/blob/master/WindowsCLI.md)
 +	[Mac/Linux, with command line](https://github.com/ymr89/MsBlog/blob/master/LinuxMac.md)
 

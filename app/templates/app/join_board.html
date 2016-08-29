@@ -1,0 +1,77 @@
+<!-- page where user can search for and join boards -->
+<!-- extends: boards_base -->
+<!-- main view: join_board -->
+<!-- url: /join_board/ -->
+
+{% extends 'app/boards_base.html' %}
+{% load staticfiles %}
+{% load rest_framework %}
+{% load i18n widget_tweaks %}
+{% load board_extras %}
+{% load threadedcomments_tags %}
+
+{% block boards %}
+
+<!-- set join board tab to active -->
+{% block JoinClass %}class="active"{% endblock %}
+
+{% block JoinContent %}
+	<br>
+    <!-- Search bar -->
+    <div class="row">
+        <div class="col-md-12">
+            <div class="input-group">
+                <div class="input-group-btn">            
+                    <form id="searchform" action="/join_board/" method="get" accept-charset="utf-8">
+                        <input style="width: 75%" type="text" class="form-control" id="searchbox" name="q" placeholder="Search for boards to join..." value="{{query_string}}">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="submit" id="search">
+                                <i class="fa fa-search" aria-hidden="true"></i>
+                                Search
+                            </button>
+                        </span>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h2>Boards you can join</h2>
+    {% if found_entries %}
+        {% for board in found_entries %}
+            <h4> 
+                <!-- only list out public boards -->
+                {% if not board.board_private %}
+                    {% if board not in userBoards %}
+                        <label for="join-{{board.board_name}}"><i class="fa fa-plus" aria-hidden="true" style="font-size: 14px;"></i>&nbsp; </label>
+                    {% endif %}
+                    {{board.board_name}}
+                {% endif %}
+            </h4>
+            <!-- if user is not already a member of a board, click on the plus icon next to board name to join -->
+            <form action="/join/{{board.board_name}}/">
+                {% csrf_token %}
+                {% if board not in userBoards %}
+                    <button class="hidden" id="join-{{board.board_name}}" type="submit" value="Join"> {% trans "Join Board" %} </button>
+                {% endif %}
+            </form>
+        {% endfor %}
+        <div class ="pagination">
+            <span class="step-links">
+                {% if found_entries.has_previous %}
+                    <a href="?page={{found_entries.previous_page_number}}"> previous </a>
+                {% endif %}
+                <span class="current">
+                    Page {{found_entries.number}} of {{ found_entries.paginator.num_pages}}
+                </span>
+                {% if found_entries.has_next %}
+                    <a href="?page={{found_entries.next_page_number}}">next</a>
+                {% endif %}
+            </span>
+        </div>
+        {% else %}
+            <!-- if no entries where found in search, display 'No Boards Found' -->
+            <h4> No Boards Found </h4>
+    {% endif %}
+{% endblock %}
+
+{% endblock %}

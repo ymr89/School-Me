@@ -1,0 +1,117 @@
+<!-- list of files for a board, visible to all members of that board.  Also the page where you upload files, but only board admins have permission to do that -->
+<!-- extends: board_base -->
+<!-- main view: files -->
+<!-- url: /board_name/files -->
+
+{% extends 'app/board_base.html' %}
+{% load staticfiles %}
+{% load rest_framework %}
+{% load i18n widget_tweaks %}
+{% load board_extras %}
+{% load threadedcomments_tags %}
+<!-- have to load apps on each page since loads do not persist when extending a base template -->
+
+{% block title %}Files | {{board}}{% endblock %}
+
+{% block boards %}
+
+<!-- set file tab to active -->
+{% block FileClass %}class="active"{% endblock %}
+
+{% block HomeLink %}<a href="/board/{{board}}/">{% endblock %}
+{% block DiscLink %}<a href="/{{board}}/discussion">{% endblock %}
+{% block MemLink %}<a href="/{{board}}/members">{% endblock %}
+{% block FileLink %}<a href="/{{board}}/files">{% endblock %}
+{% block SettingsTab %}
+	{% if boardObj in userAdminBoards %}
+		<li><a href="/settings/{{board}}">Settings</a></li>
+	{% endif %}
+{% endblock %}
+
+{% block FileContent %}
+    <h1>
+        {{board}} Files
+        <!-- New File Button trigger modal, only show if user is an admin of that board -->
+        {% if boardObj in userAdminBoards %}
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" id="sidebutton"><i class="fa fa-plus" aria-hidden="true"></i> New File</label>
+        {% endif %}
+    </h1>
+
+    <!-- New File Modal -->
+    <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Upload New File</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- upload file form -->
+                    <form role="form" action="" method="post" enctype='multipart/form-data'>
+                        {% csrf_token %}
+                        {% for field in form %}
+                            {% if field.errors %}
+                                <div class="form-group has-error">
+                                    <label class="col-sm-2 control-label" for="id_{{ field.name }}">
+                                    {{ field.label }}</label>
+                                    <div class="col-sm-10">
+                                        {{ field|attr:"class:form-control" }}
+                                        <span class="help-block">
+                                        {% for error in  field.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                        </span>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+                                    <div class="col-sm-10">
+                                        {{ field|attr:"class:form-control" }}
+                                        {% if field.help_text %}
+                                            <p class="help-block"><small>{{ field.help_text }}</small></p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        <div class="form-group">
+                            <div class="col-sm-offset-1 col-sm-11">
+                                <button type="submit" id="ufb" class="hidden" value="Upload File">{% trans "Upload File" %}</button>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- end upload file form -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <label for="ufb" class="btn btn-primary">Upload</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- jQuery for modal functionality -->
+    <script type="text/javascript">
+        $('.modal').on('hidden.bs.modal', function() {
+            $(this).find('form')[0].reset();
+        })
+    </script>
+    <!-- list out all the files of a board -->
+    <div class="container">
+        {% for file in files %}
+        <div class="row">
+            <div class="col-md-8">
+                <h4>{{ file.file_name }}:  <a href="/downloadfile/{{ file.id }}/">{{ file.file_file }}</a></h4>
+            </div>
+            <div class="col-md-4">
+                <form action="/deletefile/{{file.id}}/" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-primary" type="submit" value="Delete File" style="float: right;"> {% trans "Delete" %} </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+{% endblock %}
+
+{% endblock %}

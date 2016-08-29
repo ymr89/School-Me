@@ -1,0 +1,34 @@
+<!-- base for boards page, includes boards tabs -->
+<!-- extends: base -->
+<!-- main view: - -->
+<!-- url: - -->
+
+{% extends 'app/base.html' %}
+{% load staticfiles %}
+{% load rest_framework %}
+{% load i18n widget_tweaks %}
+{% load board_extras %}
+{% load threadedcomments_tags %}
+<!-- have to load apps on each page since loads do not persist when extending a base template -->
+
+{% block title %}Boards{% endblock %}
+
+{% block content %}
+	<!-- boards page tabs -->
+    <ul class="nav nav-pills nav-justified">
+		<li {% block YourClass %}{% endblock %}><a href="/boards/">Your Boards</a></li>
+		<li {% block JoinClass %}{% endblock %}><a href="/join_board/">Join Board</a></li>
+	</ul>
+	<div id="body-wrapper">
+		<div>
+			{% block YourContent %}
+			{% endblock %}
+		</div>
+		<div>
+			{% block JoinContent %}
+			{% endblock %}
+		</div>
+	</div>
+
+
+{% endblock %}

@@ -1,0 +1,313 @@
+<!-- board settings template -->
+<!-- extends: board_base -->
+<!-- main view: board_settings -->
+<!-- url: /settings/board_name -->
+
+{% extends 'app/board_base.html' %}
+{% load staticfiles %}
+{% load rest_framework %}
+{% load i18n widget_tweaks %}
+{% load board_extras %}
+{% load threadedcomments_tags %}
+<!-- have to load apps on each page since loads do not persist when extending a base template -->
+
+{% block title %}{{board}} Discussion{% endblock %}
+
+{% block boards %}
+
+{% block HomeLink %}<a href="/board/{{board}}/">{% endblock %}
+{% block DiscLink %}<a href="/{{board}}/discussion/">{% endblock %}
+{% block MemLink %}<a href="/{{board}}/members/">{% endblock %}
+{% block FileLink %}<a href="/{{board}}/files">{% endblock %}
+{% block SettingsTab %}
+	{% if board in userAdminBoards %}
+		<li class="active"><a href="/settings/{{board}}">Settings</a></li>
+	{% endif %}
+{% endblock %}
+
+{% block SettingsContent %}
+<!-- jQuery for datepicker in create announcement form only (not edit) -->
+<script>													  
+	$(function() {
+		$( "#end_date_create" ).datepicker({
+			changeMonth: true,
+			changeYear: true,
+		});
+	});
+</script>
+	
+	<h1>
+		Settings | {{board.board_name}}
+		<!-- label for delete board button -->
+		<label for="delete" class="btn btn-primary" id="sidebutton"><i class="fa fa-trash" aria-hidden="true"></i> Delete</label>
+		<!-- rename button unhides/hides blank edit board name form -->
+		<a href="javascript:unhide('editform')" class="btn btn-primary" id="sidebutton"><i class="fa fa-eraser" aria-hidden="true"></i> Rename</a>
+	</h1>
+	<!-- delete board -->
+	<form action="/delete/{{board.board_name}}/">
+	    {% csrf_token %}
+	    <button class="hidden" id="delete" type="submit" value="Delete"> {% trans "Delete" %} </button>
+	</form>
+	<!-- edit board name div, default is hidden -->
+	<div id="editform" class="hidden">
+		<!-- edit board name form -->
+		<form role="form" action="" method="post">
+		    {% csrf_token %}
+		    <div class="container">
+		    {% for field in form %}
+		    	{% if field.errors %}
+                    <div class="form-group has-error">
+                        <label class="col-sm-2 control-label" for="id_{{ field.name }}">
+                        {{ field.label }}</label>
+                        <div class="col-sm-8">
+                            {{ field|attr:"class:form-control" }}
+                            <span class="help-block">
+                            {% for error in  field.errors %}
+                                {{ error }}
+                            {% endfor %}
+                            </span>
+                        </div>
+                    </div>
+                {% else %}
+                    <label class="col-sm-2 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+                    <div class="col-sm-8">
+                        {{ field|attr:"class:form-control" }}
+                        {% if field.help_text %}
+                            <p class="help-block"><small>{{ field.help_text }}</small></p>
+                        {% endif %}
+                    </div>
+                    <div class="col-sm-2">
+                        <button type="submit" name="edit_board" id="edit-buttons">Save</button>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            </div>
+		</form>
+		<!-- end edit board name form -->
+	</div>
+
+	<h3>Create Announcement</h3>
+		<!-- create announcement form -->
+		<form role="form" action="" method="post">
+		    {% csrf_token %}
+			{% for field in createAnnouncement %}
+				{% if field.errors %}
+	                <div class="form-group has-error">
+	                    <label class="col-sm-2 control-label" for="id_{{ field.name }}">
+	                    {{ field.label }}</label>
+	                    <div class="col-sm-10">
+	                        {{ field }}
+	                        <span class="help-block">
+	                        {% for error in  field.errors %}
+	                            {{ error }}
+	                        {% endfor %}
+	                        </span>
+	                    </div>
+	                </div>
+	            {% else %}
+	                <div class="form-group">
+	                    <label class="col-sm-2 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+	                    <div class="col-sm-10">
+	                        {{ field }}
+	                        {% if field.help_text %}
+	                            <p class="help-block"><small>{{ field.help_text }}</small></p>
+	                        {% endif %}
+	                    </div>
+	                </div>
+	            {% endif %}
+	        {% endfor %}
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" name="create_announcement" class="btn btn-primary">Post</button><br><br>
+                </div>
+            </div>
+        </form>
+        <!-- end create announcement form -->
+
+	<!-- Show Announcements -->
+	{% if boardAnnouncements %}
+	<h3>Announcements</h3>
+		<div class="container" style="margin: 0px; padding: 0px;">
+			{% for announcement in boardAnnouncements %}
+		    	<div class="row" style="padding-bottom: 10px;">
+			    	<div class="col-md-6">
+			    		<h4> {{announcement.announcement_description}} </h4>
+			            <p>Created: {{announcement.announcement_date_created}} | Last Modified: {{announcement.announcement_last_modified }}</p>
+			    	</div>
+			    	<!-- if the user is an admin, they can remove or edit announcements -->
+				    {% if request.user.profile in boardAdminProfiles %}
+				    	<div class="col-md-6">
+					    	<div id="button-wrapper">
+					    		<!-- remove announcement -->
+						    	<form action="/removeannouncement/{{announcement.id}}/{{board.board_name}}/" method="post">
+					        		{% csrf_token %}
+					        		<button id="removeAnnouncement-{{announcement.id}}" class="hidden" type="submit" value="Remove Announcement"> {% trans "Remove" %} </button>
+					        		<label for="removeAnnouncement-{{announcement.id}}" class="btn btn-primary"><i class="fa fa-minus" aria-hidden="true"></i> Remove</label>
+					    		</form>
+					    		<!-- edit announcement button hides/unhides filled in edit announcement form -->
+					    		<a href="javascript:unhide_announcement('editann-{{announcement.id}}', '{{announcement.id}}')" class="btn btn-primary" style="margin-left: 10px;"><i class="fa fa-pencil" aria-hidden="true"></i> Edit</a>
+				    		</div>
+			    		</div>
+			    </div>
+    			<div id="editann-{{announcement.id}}" class="hidden">
+    				<!-- edit announcement form -->
+					<form role="form" action="/editannouncement/{{announcement.id}}/" method="post">
+					   {% csrf_token %}
+						{% for field in editAnnouncement %}
+							{% if field.errors %}
+				                <div class="form-group has-error">
+				                    <label class="col-sm-2 control-label" for="id_{{ field.name }}">
+				                    {{ field.label }}</label>
+				                    <div class="col-sm-10">
+				                        {{ field }}
+				                        <span class="help-block">
+				                        {% for error in  field.errors %}
+				                            {{ error }}
+				                        {% endfor %}
+				                        </span>
+				                    </div>
+				                </div>
+				            {% else %}
+				                <div class="form-group">
+				                    <label class="col-sm-2 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+				                    <div class="col-sm-10">
+				                       {{ field }}
+											  {% if field.help_text %}
+				                            <p class="help-block"><small>{{ field.help_text }}</small></p>
+				                        {% endif %}
+				                    </div>
+				                </div>
+				            {% endif %}
+				        {% endfor %}
+				            <div class="form-group">
+				                <div class="col-sm-offset-2 col-sm-10">
+				                    <button type="submit" name="edit_announcement" class="btn btn-primary">Save</button><br><br>
+				                </div>
+				            </div>
+				        </form>
+				    </div>
+	    		{% endif %}
+	    	{% endfor %} 
+		</div>	
+	{% endif %}
+	<div>
+		<h3>Invite Students</h3>
+		<!-- Search bar -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <div class="input-group-btn">            
+                        <form id="searchform" action="/settings/{{board.board_name}}/" method="get" accept-charset="utf-8">
+                            <input style="width: 75%" type="text" class="form-control" id="searchbox" name="q" placeholder="Search for users to invite..." value="{{query_string}}">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit" id="search">
+                                    <i class="fa fa-search" aria-hidden="true"></i>
+                                    Search
+                                </button>
+                            </span>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+        {% if found_entries %}
+            {% for user in found_entries %}
+            	<div class="col-md-3">
+	                <h4> 
+	                    {{user.username}} 
+	                </h4>
+                </div>
+                	<!-- if the user is not already a member, show 'Add Member' -->
+                    {% if user not in boardUsers %}
+	                    <div class="col-md-9">
+	                        <h4><a href="/add_member/{{user.id}}/{{board.board_name}}/" id="join-{{user.username}}" value="Add Member">Add Student</a></h4>
+	                    </div>
+                    {% else %}
+	                    <div class="col-md-8">
+	                    	<h4> Existing Board Student </h4>
+	                    </div>
+                    {% endif %}
+            {% endfor %}
+        {% endif %}
+        </div>
+
+        <h3>Send Email Invite</h3>
+		<!-- Search bar -->
+        <div class="row">
+            <div class="col-md-12">
+                <div class="input-group">
+                    <div class="input-group-btn">            
+                        <form id="inviteform" action="/settings/{{board.board_name}}/" method="get" accept-charset="utf-8">
+                            <input style="width: 75%" type="text" class="form-control" id="invitebox" name="i" placeholder="Input email address to send board invitation link" value="{{email_string}}">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default" type="submit" id="search">
+                                    <i class="fa fa-send" aria-hidden="true"></i>
+                                    Send Invite
+                                </button>
+                            </span>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+
+		<h3>Administrators</h3>
+		<!-- show list of all the administrators with 'Remove Admin' button next to each name -->
+		<div class="container" style="margin: 0px;">
+			<ul>
+			{% for profile in boardAdminProfiles %}
+	    		<div class="row" style="padding-bottom: 10px;">
+	    		<li>
+	    			<div class="col-md-6">
+	    				<a href='/profile/{{profile.id}}' id="reg">{{ profile.user.get_full_name }}</a>
+	    			</div>
+	    			{% if profile.id == request.user.id %}
+		    		{% elif profile in boardAdminProfiles %}
+		    		<div class="col-md-6">
+		    			<form action="/removeadmin/{{profile.id}}/{{board.board_name}}/" method="post">
+	        			{% csrf_token %}
+	        			<button id="removeAdmin-{{profile.id}}" class="hidden" type="submit" value="Remove Admin"> {% trans "Remove Admin" %} </button>
+	        			<label for="removeAdmin-{{profile.id}}" class="btn btn-primary"><i class="fa fa-minus" aria-hidden="true"></i> Remove Admin</label>
+	    				</form>
+	    			</div>
+    				{% endif %}
+    			</li>
+    			</div>
+			{% endfor %} 
+			</ul>
+		</div>
+					
+		<h3>Board Members</h3>
+		<div class="container">
+		<!-- show list of all regular members with 'Make Admin' button next to each name -->
+		<ul>
+			{% for profile in board.profile_boards.all %}
+	    		{% if profile.id == request.user.id %}
+		    	{% elif profile not in boardAdminProfiles %}
+		    	<div class="row" style="padding-bottom: 10px;">
+		    		<li>
+	    			<div class="col-md-6">
+	    			<a href='/profile/{{profile.id}}' id="reg">
+	    				{{ profile.user.get_full_name }}
+	    			</a>
+	    			</div>
+	    			<div class="col-md-6">
+		    			<form action="/makeadmin/{{profile.id}}/{{board.board_name}}/" method="post">
+	        			{% csrf_token %}
+	        			<button id="makeAdmin-{{profile.id}}" class="hidden" type="submit" value="Make Admin"> {% trans "Make Admin" %} </button>
+	        			<label for="makeAdmin-{{profile.id}}" class="btn btn-primary"><i class="fa fa-plus" aria-hidden="true"></i> Make Admin</label>
+	    				</form>
+	    			</div>
+	    			</li>
+	    		</div>
+    			{% endif %}
+			{% endfor %}
+		</ul>
+		</div>
+	</div>
+{% endblock %}
+
+{% endblock %}

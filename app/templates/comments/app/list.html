@@ -1,0 +1,87 @@
+{% load threadedcomments_tags %}
+{% load comments %} 
+{% load i18n widget_tweaks %}
+{% load staticfiles %}
+
+<div class="comments">
+    {% get_comment_list for object as comment_list %}
+    {% for comment in comment_list|fill_tree|annotate_tree %}{% ifchanged comment.parent_id %}{% else %}</li>{% endifchanged %}{% if not comment.open and not comment.close %}</li>{% endif %}{% if comment.open %}
+        <ul>{% endif %}
+    <li class="comment_li" id="c{{ comment.id }}">{# c## is used by the absolute URL of the Comment model, so keep that as it is. #}
+        <div class="comment">
+            <div class="comment_info">
+                <div class="comment_text">
+                    {{ comment.comment }}
+                </div>
+                <div class="comment_data">
+                    <a href="/profile/{{comment.user_id}}"> {{ comment.user.username }} </a> - {{ comment.submit_date|date:"d M Y, H:i" }}
+                  | <a href="#c{{ comment.id }}" data-comment-id="{{ comment.id }}" class="comment_reply_link" onclick="showReply({{comment.id}})">Reply</a>
+                    {% ifequal request.user.id comment.user_id %}
+                         | <a href="javascript:unhide_comment('edit-{{comment.id}}', '{{comment.id}}')"> Edit </a>
+                         | <a href="/deletecomment/{{comment.id}}/"> Delete </a>
+                    {% endifequal %}
+                    <script type="text/javascript">
+                        function showReply(commentid) {
+                            var editItem = document.getElementById('edit-' + commentid);
+                            if(editItem) {
+                                if(editItem.className == 'unhidden')
+                                    editItem.className = 'hidden';
+                            }
+                            if(document.getElementById('wrap_write_reply_' + commentid).style.display !== 'none') {
+                                document.getElementById('wrap_write_reply_' + commentid).style.display = 'none';
+                            }
+                            else {
+                                document.getElementById('wrap_write_reply_'+commentid).style.display='block';
+                            }                            
+                        }
+                    </script>
+                    <!-- comment edit form maybe?? -->
+                    <div id="edit-{{comment.id}}" class="hidden">
+                        <form role="form" action="/editcomment/{{comment.id}}/{{board}}/{{feedback.id}}/" method="post">
+                            {% csrf_token %}
+                            {% for field in editCommentForm %}
+                                {% if field.errors %}
+                                     <div class="form-group has-error">
+                                        <div class="col-sm-10">
+                                            {{ field|attr:"class:form-control" }}
+                                            <span class="help-block">
+                                            {% for error in  field.errors %}
+                                                {{ error }}
+                                            {% endfor %}
+                                            </span>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <div class="col-sm-10">
+                                        {{ field|attr:"class:form-control" }}
+                                        {% if field.help_text %}
+                                            <p class="help-block"><small>{{ field.help_text }}</small></p>
+                                        {% endif %}
+                                    </div>
+                                {% endif %} 
+                            {% endfor %}
+                            <div class="form-group">
+                                <div class="col-sm-2">
+                                    <button type="submit" class="btn btn-primary" value="Save">{% trans "Save" %}</button><br><br>
+                                </div>
+                            </div>
+                        </form>
+                    <br><br> 
+                    </div>
+                    <div id="wrap_write_reply_{{comment.id}}" style="display:none;">
+                    {% with comment as object %}
+                    {% include "comments/app/form.html" %}
+                    {% endwith %} 
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        {% for close in comment.close %}</li></ul>{% endfor %}
+        <div>
+            {% with comment as object %}
+            {% include "comments/app/list.html" %}
+            {% endwith %}
+        </div>
+    {% endfor %}
+</div>

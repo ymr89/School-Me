@@ -1,0 +1,174 @@
+{% extends "app/base.html" %}
+{% load board_extras %}
+{% load i18n widget_tweaks %}
+{% load threadedcomments_tags %}
+{% load comments %}
+
+{% block title %}Post{% endblock %}
+
+{% block content %}
+
+<div id="body-wrapper">
+    <h1><a href="/board/{{board}}" id="undecorated">{{board}}</a></h1>
+    {% get_comment_list for feedback as comment_list %}
+    <h4>
+        <em class="pull-left">
+            <div style="text-align: center; font-style: normal;">
+                <form action="/upvote/{{feedback.id}}/{{board}}/" method="post">
+                    {% csrf_token %}
+                    {% if upvote %}
+                        <button id="upvote-{{forloop.counter0}}" class="glyphicon glyphicon-menu-up" type="submit"  style="font-size: 24px; color: #ff9966;"></button>
+                    {% else %}
+                        <button id="upvote-{{forloop.counter0}}" class="glyphicon glyphicon-menu-up" type="submit"  style="font-size: 24px;"></button>
+                    {% endif %}
+                </form>
+                {{ feedback.feedback_upvotes|subtract:feedback.feedback_downvotes }}<br>
+                {% if not discussionFeedback %}
+                    <form action="/downvote/{{feedback.id}}/{{board}}/" method="post">
+                        {% csrf_token %}
+                        {% if downvote %}
+                            <button id="downvote-{{forloop.counter0}}" class="glyphicon glyphicon-menu-down" type="submit" style="font-size: 24px; color: #ff9966;"></button>
+                        {% else %}
+                            <button id="downvote-{{forloop.counter0}}" class="glyphicon glyphicon-menu-down" type="submit" style="font-size: 24px;"></button>
+                        {% endif %}
+                    </form>
+                {% endif %}
+            </div>
+        </em>
+    </h4>
+    <div style="margin-left: 50px;">
+        <h4><a href="/profile/{{feedback.feedback_user.id}}">{{ feedback.feedback_user }}</a> | {{ feedback.feedback_title }} 
+        <h5>{{ feedback.feedback_description }}</h5>
+        <div>
+            <p style="display:inline;">{{ feedback.feedback_last_modified }} | </p>
+            <!-- Reply button, shows comment reply form -->
+                <a href name="reply" value="Reply" onclick="showComment()">Reply</a>
+                <script type="text/javascript">
+                    function showComment() {
+                        var editItem = document.getElementById('editfeedback');
+                        if(editItem) {
+                            if(editItem.className == 'unhidden')
+                                editItem.className = 'hidden';
+                        }
+                        if(document.getElementById('wrap_write_comment').style.display !== 'none') {
+                            document.getElementById('wrap_write_comment').style.display = 'none';
+                        }
+                        else {
+                            document.getElementById('wrap_write_comment').style.display = 'block';
+                        }
+                        
+                    }
+                </script>
+                {% if feedback in userFeedbacks %}
+                <!-- show edit and delete buttons only if user is author -->
+                    <!-- edit feedback button/link -->
+                    | <a href="javascript:unhide_feedback('editfeedback', '{{feedback.id}}', {{request.user.id}})">Edit</a> |
+                    <!-- delete feedback button -->
+                    <a href="/deletefeedback_fromfeedback/{{feedback.id}}/{{board}}/"> Delete </a>
+                {% endif %}
+        </div>
+        <br>
+        {% if boardObj in userAdminBoards %}
+            <button onclick="unhide('votes-list')" class="btn btn-primary">Show votes</button><br><br>
+            <div id="votes-list" class="hidden">
+                {% ifnotequal feedback.feedback_upvotes 0 %}
+                <p>
+                    Upvoted By:
+                    {% for name in upvoters %}
+                        {% if forloop.last %}
+                            {{ name }}
+                        {% else %}
+                            {{ name }}, 
+                        {% endif %}
+                    {% endfor %}
+                    <br>
+                    &emsp; Emails: 
+                    {% for email in upvoter_emails %}
+                        {% if forloop.last %}
+                            {{ email }}
+                        {% else %}
+                            {{ email }}, 
+                        {% endif %}
+                    {% endfor %}
+                </p>
+                {% endifnotequal %}
+                {% ifnotequal feedback.feedback_downvotes 0 %}
+                <p>
+                    Downvoted By:
+                    {% for name in downvoters %}
+                        {% if forloop.last %}
+                            {{name}}
+                        {% else %}
+                            {{name}}, 
+                        {% endif %}
+                    {% endfor %}
+                    <br>
+                    &emsp; Emails: 
+                    {% for email in downvoter_emails %}
+                        {% if forloop.last %}
+                            {{ email }}
+                        {% else %}
+                            {{ email }}, 
+                        {% endif %}
+                    {% endfor %}
+                </p>
+                {% endifnotequal %}
+            </div>
+        {% endif %}
+        
+        <!-- edit feedback form -->
+        <div id="editfeedback" class="hidden">
+            <form role="form" action="" method="post">
+                {% csrf_token %}
+                {% for field in editFeedbackForm %}
+                    {% if field.errors %}
+                         <div class="form-group has-error">
+                            <label class="col-sm-1 control-label" for="id_{{ field.name }}">
+                            {{ field.label }}</label>
+                            <div class="col-sm-11">
+                                {{ field|attr:"class:form-control" }}
+                                <span class="help-block">
+                                {% for error in  field.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                                </span>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="form-group">
+                            <label class="col-sm-1 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+                            <div class="col-sm-11">
+                                {{ field|attr:"class:form-control" }}
+                                {% if field.help_text %}
+                                    <p class="help-block"><small>{{ field.help_text }}</small></p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %} 
+                {% endfor %}
+                <div class="form-group">
+                    <div class="col-sm-offset-1 col-sm-11">
+                        <button type="submit" class="btn btn-primary" value="Save">{% trans "Save" %}</button><br><br>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="wrap_write_comment" style="display:none;">
+        {% with feedback as object %}
+        {% include "comments/app/form.html" %}
+        {% endwith %}
+        <!-- {% render_comment_form for feedback %} -->
+    </div>
+
+    <div class="comments_wrapper" id="comments">
+        <div class="comments_length">
+            <h3>{{ comment_list|length }} Comments</h3>
+        </div>
+
+    </div>
+    {% with feedback as object %}
+    {% include "comments/app/list.html" %}
+    {% endwith %}
+</div>
+{% endblock %}

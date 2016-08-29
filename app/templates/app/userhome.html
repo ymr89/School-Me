@@ -1,0 +1,73 @@
+{% extends 'app/base.html' %}
+{% load i18n widget_tweaks %}
+{% load board_extras %}
+
+{% block title %}Feed{% endblock %}
+
+{% block content %}
+<div id="body-wrapper">
+    {% if userBoardsAnnouncement %}
+        <h2>Announcements</h2>
+        {% for announcement in userBoardsAnnouncement %}
+            <div class="alert alert-info alert-dismissible fade in" role="alert" id="alert" style="margin-bottom: 15px;">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <p>
+                    <a id="undecorated" href="/board/{{announcement.announcement_board.board_name}}">{{announcement.announcement_board.board_name}}</a>
+                     - {{announcement.announcement_description}}
+                </p>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <h2>What's Happening</h2>
+    {% if userBoardsFeedback %}
+            {% for feedback in userBoardsFeedback %}
+                <h3><a id="undecorated" href="/board/{{feedback.feedback_board.board_name }}">{{feedback.feedback_board.board_name }}</h3>
+                <h4>
+                    <em class="pull-left">
+                        <div style="text-align: center; font-style: normal;">
+                            <form action="/upvote/{{feedback.id}}/{{feedback.feedback_board.board_name}}/" method="post">
+                                {% csrf_token %}
+                                {% if upvotes|index:forloop.counter0 %}
+                                    <button id="upvote-{{forloop.counter0}}" class="glyphicon glyphicon-menu-up" type="submit"  style="font-size: 24px; color: #ff9966;"></button>
+                                {% else %}
+                                    <button id="upvote-{{forloop.counter0}}" class="glyphicon glyphicon-menu-up" type="submit"  style="font-size: 24px;"></button>
+                                {% endif %}
+                            </form>
+                            {{ feedback.feedback_upvotes|subtract:feedback.feedback_downvotes }}<br>
+                            <form action="/downvote/{{feedback.id}}/{{board}}/" method="post">
+                                {% csrf_token %}
+                                {% if downvotes|index:forloop.counter0 %}
+                                    <button id="downvote-{{forloop.counter0}}" class="glyphicon glyphicon-menu-down" type="submit" style="font-size: 24px; color: #ff9966;"></button>
+                                {% else %}
+                                    <button id="downvote-{{forloop.counter0}}" class="glyphicon glyphicon-menu-down" type="submit" style="font-size: 24px;"></button>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </em>
+                </h4>
+                <div style="margin-left: 50px;">
+                
+                    <h4><a href="/profile/{{feedback.feedback_user.id}}">{{ feedback.feedback_user }}</a> | <a href="/{{feedback.feedback_board.board_name}}/feedback/{{feedback.id}}">{{ feedback.feedback_title }}</a> </h4>
+
+                    <h5>{{ feedback.feedback_description }}</h5>
+                    <p>{{feedback.feedback_last_modified }}<br><br>
+                    <!-- show edit and delete buttons only if user is author - do we really need edit/delete in feed?? -->
+                    <!-- {% if feedback in userFeedbacks %}
+                    <div id="button-wrapper">
+                        <form action="/edit/{{feedback.id}}/" method="post">
+                            {% csrf_token %}
+                            <button class='btn btn-primary' id="edit" type="submit" value="Edit"> {% trans "Edit" %} </button>
+                        </form>
+                        <form action="/deletefeedback/{{feedback.id}}/{{board}}/" method="post">
+                            {% csrf_token %}
+                            <button style="margin-left: 10px;" class='btn btn-primary' id="delete" type="submit" value="Delete"> {% trans "Delete" %} </button>
+                        </form>
+                    </div>
+                    {% endif %} -->
+                </div>
+            {% endfor %}
+        {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,78 @@
+<!-- Edit Profile page -->
+<!-- extends: base -->
+<!-- main view: edit -->
+<!-- url: /profile/user_id/edit/ -->
+
+{{% extends 'app/base.html' %}
+{% load staticfiles %}
+{% load rest_framework %}
+{% load i18n widget_tweaks %}
+{% load board_extras %}
+{% load threadedcomments_tags %}
+<!-- have to load apps on each page since loads do not persist when extending a base template -->
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+
+	<div class="jumbotron">
+		<div class="row">
+			<div class="col-md-3" style="text-align: center; margin-top: 80px;">
+				<div id="circle">
+					<span class="glyphicon glyphicon-user"></span>
+				</div>
+			</div>
+			<div class="col-md-9">
+        <!-- edit profile form -->
+				<form action="" method="post">
+               {% csrf_token %}
+               {% for field in form %}
+                   <br>
+                   {% if field.errors %}
+                       <div class="form-group has-error">
+                           <div class="col-sm-12" style="padding-left: 0px;">
+                               {{ field|attr:"class:form-control" }}
+                               <span class="help-block">
+                               {% for error in  field.errors %}
+                                   {{ error }}
+                               {% endfor %}
+                               </span>
+                           </div>
+                       </div>
+                   {% else %}
+                       <div class="form-group">
+                           <div class="col-sm-12" style="padding-left: 0px;">
+                               {{ field|attr:"class:form-control" }}
+                               {% if field.help_text %}
+                                   <p class="help-block"><small>{{ field.help_text }}</small></p>
+                               {% endif %}
+                           </div>
+                       </div>
+                   {% endif %}
+               {% endfor %}
+                   <div class="form-group">
+                       <div class="col-sm-12" style="padding-left: 0px; margin-bottom: 5px;">
+                           <button type="submit" class="btn btn-primary" name="edit_profile" value="Save">{% trans "Save" %}</button>
+                       </div>
+                   </div>
+               </form>
+            <!--  -->
+            <script>
+              edit_profile({{request.user.id}});
+            </script>
+				<!-- <h4>{{profile.user.email}}</h4> -->
+				{% ifequal profile.user.id request.user.id %}
+					<a href="/profile/{{profile.user.id}}" style="text-decoration: none; font-size: 14px;"><i class="fa fa-long-arrow-left" aria-hidden="true"></i> back to profile</a>
+				{% endifequal %}
+			</div>
+		</div>
+	</div>
+	<div id="body-wrapper">
+		<h2>{{profile.user.first_name}}'s Boards</h2><br>
+		<ul>
+			{% for board in request.user.profile.boards.all %}
+	    		<li id="reg">{{ board.board_name }}</li>
+			{% endfor %}
+		</ul>
+	</div>
+{% endblock %}

@@ -1,0 +1,251 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+{% load staticfiles %}
+{% load rest_framework %}
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <link rel="shortcut icon" type="image/png" href="http://www.favicon-generator.org/download/2016-08-18/6dcb1e210a2644d7cbe79d2f18a8362b.ico"/>
+    <title>Features | SchoolMe</title>
+
+    <!-- Bootstrap Core CSS -->
+	<link rel="stylesheet" type="text/css" href="{% static 'app/startbootstrap-landing-page/css/bootstrap.min.css' %}">
+
+    <!-- Custom Fonts -->
+    <script src="https://use.fontawesome.com/eabc938590.js"></script>
+    <link href="{% static 'app/font-awesome/css/font-awesome.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet" type="text/css">
+
+
+    <link type="text/css" href="{% static 'app/startbootstrap-landing-page/css/landing-page.css' %}" rel="stylesheet">
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+
+<body>
+    <!-- Header -->
+    <a name="about"></a>
+
+    <div class="intro-header-more">
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="intro-message">
+                        <h1>Features</h1>
+                        <h3>Learn why School-Me is different from the crowd</h3>
+                        <hr class="intro-divider">
+                        <ul class="list-inline intro-social-buttons">
+                            <li>
+                                <a href="/" class="btn btn-default btn-lg"><i class="fa fa-home fa-fw"></i> <span class="network-name">Home</span></a>
+                            </li>
+                            <li>
+                                <a href="/signup/" class="btn btn-default btn-lg"><i class="fa fa-pencil fa-fw"></i> <span class="network-name">Sign Up</span></a>
+                            </li>
+                            <li>
+                                <a href="/accounts/login/" class="btn btn-default btn-lg"><i class="fa fa-user fa-fw"></i> <span class="network-name">Login</span></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.intro-header -->
+
+    <div class="row">
+                <div class="col-lg-12 text-center">
+                    <br>
+                    <h2 class="section-heading">What makes School-Me better?</h2>
+                    <h3 class="section-subheading text-muted">A lot. Different features, a different environment.</h3>
+                    <br>
+            <br>
+                </div>
+            </div>
+
+
+    <!-- Page Content -->
+
+        <a  name="services"></a>
+        <div class="content-section-a">
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">Security</h2>
+                    <p class="lead">Between permissions, authentication, and the ability to make boards private to communicate with students, School-Me's security features ensure that your data is safe.</p>
+                </div>
+                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                    <img src="{% static 'app/photos/Security.png' %}" alt="" height="300" width="300" >  
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.content-section-a -->
+
+
+
+        <div class="content-section-b">
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">Boards</h2>
+                    <p class="lead">Think of boards as tasks or assingments. Boards can be public or private, giving the opportunity for students to ask as much as they need. Help your classroom more than ever before.</p>
+                </div>
+                <div class="col-lg-5 col-sm-pull-6  col-sm-6">
+                    <img  src="{% static 'app/photos/Board.png' %}" alt="" height="400" width="400">  
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+
+
+    <!-- /.content-section-b -->
+
+
+       <div class="content-section-a">
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">Profiles</h2>
+                    <p class="lead">Every student has a profile with verified contact information that only board administrators can see. See who needs more help keeping the security, making for a community with privacy in mind.</p>
+                </div>
+                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                    <img  src="{% static 'app/photos/Profile.png' %}" alt="" height="400" width="400" >  
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+    <!-- /.content-section-a -->
+
+
+       <div class="content-section-b">
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">Posts with threaded comments</h2>
+                    <p class="lead">Conversation can't happen when students and instructors are responding to one another in an unformatted way. Threaded comments make dialogue easier, leading the way to more meaningful learning.</p>
+                </div>
+                <div class="col-lg-5 col-sm-pull-6  col-sm-6">
+                    <img class="img-responsive" src="{% static 'app/photos/comment-bubbles.jpg' %}" alt="">  
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+
+
+    <!-- /.content-section-b -->
+       <div class="content-section-a">
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-5 col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">File Upload</h2>
+                    <p class="lead">Upload your homework or explanation files. All the students will find the resources in one place. Keep it simple, keep it efficient. </p>
+                </div>
+                <div class="col-lg-5 col-lg-offset-2 col-sm-6">
+                    <img  src="{% static 'app/photos/upload.png' %}" alt="" height="300" width="300" >  
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+
+    <div class="content-section-b">
+
+        <div class="container">
+
+            <div class="row">
+                <div class="col-lg-5 col-lg-offset-1 col-sm-push-6  col-sm-6">
+                    <hr class="section-heading-spacer">
+                    <div class="clearfix"></div>
+                    <h2 class="section-heading">Inbox</h2>
+                    <p class="lead">Allow your users to private message each other. Only authenticated users will be able to interact privately with more questions or extra clarification. </p>
+                </div>
+                <div class="col-lg-5 col-sm-pull-6  col-sm-6">
+                    <img  src="{% static 'app/photos/inbox.png' %}" alt="" height="300" width="300">  
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container -->
+
+    </div>
+
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <ul class="list-inline">
+                        <li>
+                            <a href="/">Home</a>
+                        </li>
+                        <li class="footer-menu-divider">&sdot;</li>
+                        <li>
+                            <a href="/more/">Features</a>
+                        </li>
+                        <li class="footer-menu-divider">&sdot;</li>
+                        <li>
+                            <a href="/contact/">Contact</a>
+                        </li>
+                        
+                    </ul>
+                    <p class="copyright text-muted small">Copyright &copy; Microsoft Corporation 2016. All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</body>
+
+</html>

@@ -1,0 +1,45 @@
+{% load threadedcomments_tags %}
+{% load i18n widget_tweaks %}
+{% load comments %}
+
+<br>
+<div id="form-comment">
+    {% get_comment_form for object as form %}
+    <form action="{% comment_form_target %}" method="post">{% csrf_token %}
+            {% for field in form %}
+                {% if field.is_hidden %}
+                    <div> {{ field }} </div>
+                {% else %}
+                    {% if field.errors %} 
+                        <div class="form-group has-error">
+                            <label class="col-sm-1 control-label" for="id_{{ field.name }}">
+                            {{ field.label }}</label>
+                            <div class="col-sm-10">
+                                {{ field|attr:"class:form-control" }}
+                                <span class="help-block">
+                                {% for error in  field.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                                </span>
+                            </div>
+                        </div> 
+                    {% elif field.name == 'comment' %}
+                        <div class="form-group">
+                            <div class="col-sm-10">
+                                {{ field|attr:"class:form-control" }}
+                                {% if field.help_text %}
+                                    <p class="help-block"><small>{{ field.help_text }}</small></p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+            <div class="col-sm-2">
+                <p>
+                    <input type="hidden" name="next" value="{{request.path}}"/>
+                    <input class='btn btn-primary' type="submit" value="Submit"/>
+                </p>
+            </div>
+    </form>
+</div>

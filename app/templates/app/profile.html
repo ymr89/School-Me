@@ -1,0 +1,43 @@
+<!-- User Profile page -->
+<!-- extends: base -->
+<!-- main view: profile -->
+<!-- url: /profile/user_id/ -->
+
+{% extends 'app/base.html' %}
+{% load staticfiles %}
+{% load rest_framework %}
+{% load i18n widget_tweaks %}
+{% load board_extras %}
+{% load threadedcomments_tags %}
+<!-- have to load apps on each page since loads do not persist when extending a base template -->
+
+{% block title %}{{profile.user.first_name}} {{profile.user.last_name}}{% endblock %}
+
+{% block content %}
+	<div class="jumbotron">
+		<div class="row">
+			<div class="col-md-3" style="text-align: center; margin-top: 45px;">
+				<div id="circle">
+					<span class="glyphicon glyphicon-user"></span>
+				</div>
+			</div>
+			<div class="col-md-9">
+				<h1>{{profile.user.get_full_name}}</h1>
+				<h2>{{profile.user_organization.organization_name}}</h2>
+				<h4><a href="mailto:{{profile.user.email}}">{{profile.user.email}}</a></h4>
+				<!-- if its the users own profile, show edit button -->
+				{% ifequal profile.user.id request.user.id %}
+					<a href="/profile/{{request.user.id}}/edit" style="text-decoration: none; font-size: 14px;"><i class="fa fa-pencil" aria-hidden="true"></i> edit</a>
+				{% endifequal %}
+			</div>
+		</div>
+	</div>
+	<div id="body-wrapper">
+		<h2>{{profile.user.first_name}}'s Boards</h2><br>
+		<ul>
+			{% for board in request.user.profile.boards.all %}
+	    		<li><a id="reg" href='/board/{{board.board_name}}/'>{{ board.board_name }}</a></li>
+			{% endfor %}
+		</ul>
+	</div>
+{% endblock %}

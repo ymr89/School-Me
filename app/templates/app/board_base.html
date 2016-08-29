@@ -1,0 +1,49 @@
+<!-- base for instance of a board, includes board tabs -->
+<!-- extends: base -->
+<!-- main view: - -->
+<!-- url: - -->
+
+{% extends 'app/base.html' %}
+{% load staticfiles %}
+{% load rest_framework %}
+{% load i18n widget_tweaks %}
+{% load board_extras %}
+{% load threadedcomments_tags %}
+<!-- have to load apps on each page since loads do not persist when extending a base template -->
+
+{% block title %}{% endblock %}
+
+{% block content %}
+	<!-- board tabs, settings tab is different because it is only displayed if user is an admin of that board -->
+    <ul class="nav nav-pills nav-justified">
+		<li {% block HomeClass %}{% endblock %}>{% block HomeLink %}{% endblock %}Home</a></li>
+		<li {% block DiscClass %}{% endblock %}>{% block DiscLink %}{% endblock %}Discussion</a></li>
+		<li {% block MemClass %}{% endblock %}>{% block MemLink %}{% endblock %}Members</a></li>
+		<li {% block FileClass %}{% endblock %}>{% block FileLink %}{% endblock %}Files</a></li>
+		{% block SettingsTab %}{% endblock %}
+	</ul>
+	<div id="body-wrapper">
+		<div>
+			{% block HomeContent %}
+			{% endblock %}
+		</div>
+		<div>
+			{% block DiscussionContent %}
+			{% endblock %}
+		</div>
+		<div>
+			{% block MembersContent %}
+			{% endblock %}
+		</div>
+		<div>
+			{% block FileContent %}
+			{% endblock %}
+		</div>
+		<div>
+			{% block SettingsContent %}
+			{% endblock %}
+		</div>
+	</div>
+
+
+{% endblock %}

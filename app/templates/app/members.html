@@ -1,0 +1,39 @@
+<!-- list of all the members in a group, visible to all members of that board -->
+<!-- extends: board_base -->
+<!-- main view: members -->
+<!-- url: /board_name/members -->
+
+{% extends 'app/board_base.html' %}
+{% load staticfiles %}
+{% load rest_framework %}
+{% load i18n widget_tweaks %}
+{% load board_extras %}
+{% load threadedcomments_tags %}
+<!-- have to load apps on each page since loads do not persist when extending a base template -->
+
+{% block title %}Members | {{board}}{% endblock %}
+
+{% block boards %}
+
+<!-- set members tab to active -->
+{% block MemClass %}class="active"{% endblock %}
+
+{% block HomeLink %}<a href="/board/{{board}}/">{% endblock %}
+{% block DiscLink %}<a href="/{{board}}/discussion">{% endblock %}
+{% block MemLink %}<a href="/{{board}}/members">{% endblock %}
+{% block FileLink %}<a href="/{{board}}/files">{% endblock %}
+{% block SettingsTab %}
+	{% if boardObj in userAdminBoards %}
+		<li><a href="/settings/{{board}}">Settings</a></li>
+	{% endif %}
+{% endblock %}
+
+{% block MembersContent %}
+	<h1>{{ board }} Members</h1>
+    <!-- list out all the members of a board -->
+    {% for profile in boardObj.profile_boards.all %}
+        <h4><a href='/profile/{{profile.id}}'>{{ profile.user.get_full_name }}</a></h4>
+    {% endfor %}
+{% endblock %}
+
+{% endblock %}

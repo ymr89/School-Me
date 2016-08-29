@@ -1,0 +1,70 @@
+<!-- base template for all internal pages, includes sidebar, internal background and content container -->
+
+{% load staticfiles %}
+{% load rest_framework %}
+{% load i18n widget_tweaks %}
+
+<html ng-app="myApp">
+<head>
+    <!-- jQuery stuff -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <script src="http://code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css"> 
+    <!-- bootstrap 3.3.7 css and js -->
+    <link rel="stylesheet" type="text/css" href="{% static 'app/bootstrap-3.3.7-dist/css/bootstrap.min.css' %}">
+    <script type="text/javascript" src="{% static 'app/bootstrap-3.3.7-dist/js/bootstrap.min.js' %}"></script>
+    <!-- font awesome -->
+    <script src="{% static 'app/fonts/font-awesome-4.6.3/' %}"https://use.fontawesome.com/eabc938590.js"></script>
+    <link rel="stylesheet" href="{% static 'app/fonts/font-awesome-4.6.3/css/font-awesome.min.css' %}">
+    <!-- angular 1.4.9 -->
+    <script src="{% static 'app/js/angular.min.js' %}"></script>
+    <!-- our angular functions -->
+    <script src="{% static 'app/js/app.js' %}"></script>
+    <!-- our javascript functions -->
+    <script type="text/javascript" src="{% static 'app/js/JSfunctions.js' %}"></script>
+    <!-- our custom css for internal pages  -->
+    <link rel="stylesheet" type="text/css" href="{% static 'app/css/custom.css' %}">
+    
+
+    <link rel="shortcut icon" type="image/png" href="http://www.favicon-generator.org/download/2016-08-18/6dcb1e210a2644d7cbe79d2f18a8362b.ico"/>
+    <title>{% block title %}{% endblock %} | SchoolMe</title>
+    
+</head>
+<body>
+<!-- sidebar -->
+    <div id="sidebar">
+        <nav id="navMenu"></nav>
+        <script src="{% static 'app/js/sidebar.js' %}"></script>
+        <script>
+            Sidebar('{{request.user.get_full_name}}', {{request.user.id}});
+        </script>
+        <!-- logout button/form -->
+        <form action="/logout/" method="post">
+            {% csrf_token %}
+            <input class="hidden" id="logout" type="submit" value="Logout"/>
+        </form> 
+    </div>
+
+<!-- body -->
+    <div class="container-fluid" id="internal-background">
+        <div class="container-fluid" id="content-container">
+        <!-- display messages -->
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == "error" %}
+                    <p class="alert alert-danger">{{ message }}</p>
+                {% elif message.tags == "success" %}
+                    <p class="alert alert-success">{{ message }}</p>
+                {% elif message.tags == "info" %}
+                    <p class="alert alert-info">{{ message }}</p>
+                {% elif message.tags == "warning" %}
+                    <p class="alert alert-warning">{{ message }}</p>
+                {% endif%}
+            {%endfor%}
+        {%endif%}
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</body>
+</html>

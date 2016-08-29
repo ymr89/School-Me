@@ -1,0 +1,283 @@
+<!-- first thing you see when you click on a board name is the home tab --> 
+<!-- extends: board_base -->
+<!-- main view: board -->
+<!-- url: /board/board_name -->
+
+{% extends 'app/board_base.html' %}
+{% load staticfiles %}
+{% load rest_framework %}
+{% load i18n widget_tweaks %}
+{% load board_extras %}
+{% load threadedcomments_tags %}
+<!-- have to load apps on each page since loads do not persist when extending a base template -->
+
+{% block title %}{{board}} Board{% endblock %}
+
+{% block boards %}
+
+<!-- set home tab to active -->
+{% block HomeClass %}class="active"{% endblock %}
+
+{% block HomeLink %}<a href="/board/{{board}}/">{% endblock %}
+{% block DiscLink %}<a href="/{{board}}/discussion">{% endblock %}
+{% block MemLink %}<a href="/{{board}}/members">{% endblock %}
+{% block FileLink %}<a href="/{{board}}/files">{% endblock %}
+<!-- check permissions for displaying settings tab -->
+{% block SettingsTab %}
+    {% if boardObj in userAdminBoards %}
+        <li><a href="/settings/{{board}}">Settings</a></li>
+    {% endif %}
+{% endblock %}
+
+{% block HomeContent %}
+    <h1>
+        {{board}}
+        <!-- leave board button -->
+        <label for="leave" class="btn btn-primary" id="sidebutton"><i class="fa fa-sign-out" aria-hidden="true"></i> Leave Board</label>
+    </h1>
+    <!-- leave board form -->
+    <form action="/leave/{{board}}/" method="post">
+        {% csrf_token %}
+        <button class="hidden" id="leave" type="submit" value="Leave Board"> {% trans "Leave Board" %} </button>
+    </form>
+    
+    <!-- if there are any announcents, display them -->
+        {% if boardAnnouncements %}
+            <h2>Announcements</h2>
+            {% for announcement in boardAnnouncements %}
+                <!-- dismissable announcements -->
+                <div class="alert alert-info alert-dismissible fade in" role="alert" id="alert" style="margin-bottom: 15px;">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                    <p> {{announcement.announcement_description}}</p>
+                </div>
+            {% endfor %}   
+        {% endif %}
+    <br>
+    
+    <!-- New Post Modal -->
+    <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Create New Feedback</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- new post form -->
+                    <form action="/board/{{board}}/" method="post">
+                    <!-- when file upload for a feedback post gets implemented -->
+                    <!-- <form role="form" action="/board/{{board}}/" method="post" enctype="multipart/form-data"> -->
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <br>
+                            {% if field.errors %}
+                                <div class="form-group has-error">
+                                    <label class="col-sm-1 control-label" for="id_{{ field.name }}">
+                                    {{ field.label }}</label>
+                                    <div class="col-sm-11">
+                                        {{ field|attr:"class:form-control" }}
+                                        <span class="help-block">
+                                        {% for error in  field.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                        </span>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    <label class="col-sm-1 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+                                    <div class="col-sm-11">
+                                        {{ field|attr:"class:form-control" }}
+                                        {% if field.help_text %}
+                                            <p class="help-block"><small>{{ field.help_text }}</small></p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        <div class="form-group">
+                            <div class="col-sm-offset-1 col-sm-11">
+                                <button id="fpb" type="submit" class="hidden" name="post_feedback" value="Post Feedback">{% trans "Post Feedback" %}</button><br><br>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- end new post form -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <label for="fpb" class="btn btn-primary">Post</label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- jQuery for modal functionality -->
+    <script type="text/javascript">
+        $('.modal').on('hidden.bs.modal', function() {
+            $(this).find('form')[0].reset();
+        })
+    </script>
+    
+    <div class="container">
+        <!-- Search bar -->
+        <form action="/board/{{board}}/" method="post" name="ff"> 
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-10" style="padding: 0px; padding-left: 15px;">
+                    <input type="text" class="form-control" id="searchbox" name="q" placeholder="Search for discussions..." value="{{query_string}}">
+                </div>
+                <div class="col-md-2" style="padding: 0px; padding-right: 15px;">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="submit" id="search">
+                            <i class="fa fa-search" aria-hidden="true"></i>
+                            Search
+                        </button>
+                    </span>
+                </div>
+            </div>
+            <!-- filter form -->
+            <div class="hidden"> <!-- form is hidden, controlled by buttons with some javascript -->
+            {% for field in filterform %}
+                <br>
+                {% if field.errors %}
+                    <div class="form-group has-error">
+                        <label class="col-sm-1 control-label" for="id_{{ field.name }}">
+                        {{ field.label }}</label>
+                        <div class="col-sm-11">
+                            {{ field|attr:"class:form-control" }}
+                            <span class="help-block">
+                            {% for error in  field.errors %}
+                                {{ error }}
+                            {% endfor %}
+                            </span>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="form-group">
+                        <label class="col-sm-1 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+                        <div class="col-sm-11">
+                            {{ field|attr:"class:form-control" }}
+                            {% if field.help_text %}
+                                <p class="help-block"><small>{{ field.help_text }}</small></p>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endif %}
+            {% endfor %}
+            </div> <!-- end hidden div -->
+        </form>
+    </div> <!-- end container -->
+    <br>
+    <div style="text-align: center;">
+    <!-- New Post Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" style="float: left;"><i class="fa fa-plus" aria-hidden="true"></i> New Post</button>
+    <!-- filter button group -->
+    <div class="btn-group" role="group">
+        <button class="btn btn-primary" onclick="filter('id_postType','0');" type="submit">All</button>
+        <button class="btn btn-primary" onclick="filter('id_postType','1');" type="submit">Clarifications</button>
+        <button class="btn btn-primary" onclick="filter('id_postType','2');" type="submit">Explanations</button>
+        <div class="btn-group" role="group">
+            <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Filter by
+                <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu">
+                <li><a onclick="filter('id_filterType','0');">New</a></li>
+                <li><a onclick="filter('id_filterType','1');">Featured</a></li>
+                <li><a onclick="filter('id_filterType','2');">Old</a></li>
+            </ul>
+        </div>
+    </div>
+    </div>
+        <!-- display feedback -->
+        {% if feedbacks %}
+            {% for feedback in feedbacks %}
+                <br>
+                <h4>
+                    <!-- arrows and votes -->
+                    <em class="pull-left">
+                        <div style="text-align: center; font-style: normal;">
+                            <!-- upvoting functionality -->
+                            <form action="/upvote/{{feedback.id}}/{{board}}/" method="post">
+                                {% csrf_token %}
+                                {% if upvotes|index:forloop.counter0 %}
+                                    <!-- if user has upvoted this post, arrow turns orange -->
+                                    <button id="upvote-{{forloop.counter0}}" class="glyphicon glyphicon-menu-up" type="submit"  style="font-size: 24px; color: #ff9966;"></button>
+                                {% else %}
+                                    <!-- otherwise its black -->
+                                    <button id="upvote-{{forloop.counter0}}" class="glyphicon glyphicon-menu-up" type="submit"  style="font-size: 24px;"></button>
+                                {% endif %}
+                            </form>
+                            <!-- display net votes -->
+                            {{ feedback.feedback_upvotes|subtract:feedback.feedback_downvotes }}<br>
+                            <!-- downvoting functionality -->
+                            <form action="/downvote/{{feedback.id}}/{{board}}/" method="post">
+                                {% csrf_token %}
+                                {% if downvotes|index:forloop.counter0 %}
+                                    <!-- if user has downvoted this post, arrow turns orange -->
+                                    <button id="downvote-{{forloop.counter0}}" class="glyphicon glyphicon-menu-down" type="submit" style="font-size: 24px; color: #ff9966;"></button>
+                                {% else %}
+                                    <!-- otherwise its black -->
+                                    <button id="downvote-{{forloop.counter0}}" class="glyphicon glyphicon-menu-down" type="submit" style="font-size: 24px;"></button>
+                                {% endif %}
+                            </form>
+                        </div>
+                    </em>
+                </h4>
+                <!-- feedback body -->
+                <div style="margin-left: 50px;">
+                    <h4><a href="/profile/{{feedback.feedback_user.id}}">{{ feedback.feedback_user }}</a> | <a href="/{{board}}/feedback/{{feedback.id}}">{{ feedback.feedback_title }}</a> 
+                    <h5>{{ feedback.feedback_description }}</h5>
+                    <p style="display:inline;">{{feedback.feedback_last_modified }}</p>
+                    <!-- show edit and delete buttons only if user is author -->
+                    {% if feedback in userFeedbacks %}
+                        <!-- edit feedback button/link hides/unhides prepopulated edit form -->
+                         | <a href="javascript:unhide_feedback('editfeedback-{{feedback.id}}', '{{feedback.id}}', {{request.user.id}})">Edit</a> | 
+                        <!-- delete feedback button -->
+                        <a href="/deletefeedback/{{feedback.id}}/{{board}}/">Delete</a>
+                        <br>
+                        <!-- edit feedback form -->
+                        <div id="editfeedback-{{feedback.id}}" class="hidden" style="height: 200px;">
+                            <form role="form" action="/editfeedback/{{feedback.id}}/{{board}}/" method="post">
+                                {% csrf_token %}
+                                {% for field in editFeedback %}
+                                    {% if field.errors %}
+                                         <div class="form-group has-error">
+                                            <label class="col-sm-1 control-label" for="id_{{ field.name }}">
+                                            {{ field.label }}</label>
+                                            <div class="col-sm-11">
+                                                {{ field|attr:"class:form-control" }}
+                                                <span class="help-block">
+                                                {% for error in  field.errors %}
+                                                    {{ error }}
+                                                {% endfor %}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    {% else %}
+                                        <div class="form-group">
+                                            <label class="col-sm-1 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+                                            <div class="col-sm-11">
+                                                {{ field|attr:"class:form-control" }}
+                                                {% if field.help_text %}
+                                                    <p class="help-block"><small>{{ field.help_text }}</small></p>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    {% endif %} 
+                                {% endfor %}
+                                <div class="form-group">
+                                    <div class="col-sm-offset-1 col-sm-11">
+                                        <button type="submit" class="btn btn-primary" value="Save">{% trans "Save" %}</button><br>
+                                    </div>
+                                </div>
+                            </form>
+                            <!-- end edit feedback form -->
+                        </div>
+                    {% endif %} <!-- endif feedback in userFeedbacks -->
+                </div> <!-- end indvidual feedback div -->
+            {% endfor %} <!-- endfor feedback in feedbacks -->
+        {% endif %} <!-- endif feedbacks exist -->
+{% endblock %}
+{% endblock %}

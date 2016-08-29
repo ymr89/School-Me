@@ -1,0 +1,4 @@
+{% extends "postman/base_write.html" %}
+{% load i18n %}
+{% block pm_write_title %}<button type="submit" class="btn btn-primary" value="Submit">{% trans "Reply"%}</button>{% endblock %}
+{% block pm_write_recipient %}<tr><th><label>{% trans "Recipient" %}:</label></th><td>{{ recipient }}</td></tr>{% endblock %}

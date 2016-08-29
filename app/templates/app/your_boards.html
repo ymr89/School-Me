@@ -1,0 +1,115 @@
+<!-- first thing you see when you click boards on sidebar, lists out users boards and also has create board functionality -->
+<!-- extends: boards_base -->
+<!-- main view: boards -->
+<!-- url: /boards/ -->
+
+{% extends 'app/boards_base.html' %}
+{% load staticfiles %}
+{% load rest_framework %}
+{% load i18n widget_tweaks %}
+{% load board_extras %}
+{% load threadedcomments_tags %}
+<!-- have to load apps on each page since loads do not persist when extending a base template -->
+
+{% block boards %}
+
+<!-- set your boards tab to active -->
+{% block YourClass %}class="active"{% endblock %}
+{% block YourContent %}
+	<h2>
+        Your Boards
+        <!-- New Board Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal" id="sidebutton"><i class="fa fa-plus" aria-hidden="true"></i> New Board</label>
+    </h2>
+    <!-- New Board Modal -->
+    <div class="modal" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Create New Board</h4>
+                </div>
+                <div class="modal-body">
+                    <!-- new board form, hidden and controlled by javascript -->
+                    <form role="form" action="" method="post" name="cbf" class="hidden">
+                        {% csrf_token %}
+                        {% for field in form %}
+                            <br>
+                            {% if field.errors %}
+                                <div class="form-group has-error">
+                                    <label class="col-sm-2 control-label" for="id_{{ field.name }}">
+                                    {{ field.label }}</label>
+                                    <div class="col-sm-10">
+                                        {{ field|attr:"class:form-control" }}
+                                        <span class="help-block">
+                                        {% for error in  field.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                        </span>
+                                    </div>
+                                </div>
+                            {% else %}
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+                                    <div class="col-sm-10">
+                                        {{ field|attr:"class:form-control" }}
+                                        {% if field.help_text %}
+                                            <p class="help-block"><small>{{ field.help_text }}</small></p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <button type="submit" class="btn btn-primary" value="New Board">{% trans "New Board" %}</button><br>
+                            </div>
+                        </div>
+                    </form>
+                    <!-- end new board form -->
+                    <!-- form that user actually sees, values pushed to hidden create board form and is submitted with javascript function -->
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="fake_field">
+                        <div class="input-group-btn">
+                            <button id="dropButton" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 88px;">Public <span class="caret"></span></button>
+                            <ul class="dropdown-menu">
+                                <li><a onclick="privacy_control('id_board_privacy', '0')">Public</a></li>
+                                <li><a onclick="privacy_control('id_board_privacy', '1')">Private</a></li>
+                            </ul>
+                        </div>
+                    </div><br>
+                    <b>Public boards</b> are visible to any School-Me user; anyone can join.
+                    <br><br>
+                    <b>Private boards</b> are not indexed in board search results. Board members must be invited in order to join.
+                    <br><br>
+                    <div style="float: right;">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button class="btn btn-primary" onclick="create_board()">New Board</button>
+                    </div>
+                    <br><br>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- jQuery for modal functionality -->
+    <script type="text/javascript">
+        $('.modal').on('hidden.bs.modal', function() {
+            $(this).find('form')[0].reset();
+        })
+    </script>
+    <!-- display list of boards -->
+        {% for board in boards %}
+            <!-- if user is admin of a board, show cog next to it that is a link straight to board settings page -->
+            {% if board in userAdminBoards %}
+                <label for="settings-{{board}}"><i class="fa fa-cog" aria-hidden="true" id="reg"></i></label>
+            {% endif %}
+            <a id="reg" href='/board/{{board.board_name}}/'> {{board}} </a>
+            <form action="/settings/{{board.board_name}}/" method="post">
+                {% csrf_token %}
+                <button class="hidden" id="settings-{{board}}" type="submit" value="Settings"> {% trans "Settings" %} </button>
+            </form>
+            <br>
+        {% endfor %}
+{% endblock %}
+
+{% endblock %}

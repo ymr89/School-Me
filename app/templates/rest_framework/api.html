@@ -1,0 +1,27 @@
+{% extends "rest_framework/base.html" %}
+
+{% block title %} API - School-Me {% endblock %}
+
+{% block branding %}
+	<span>
+		<a href="" rel="nofollow" class="navbar-brand">
+		API - School-Me <span class="version">1.0</span>
+		</a>
+	</span>
+{% endblock %}
+
+{% block breadcrumbs %}
+  <ul class="breadcrumb">
+    {% for breadcrumb_name, breadcrumb_url in breadcrumblist %}
+      {% if forloop.last %}
+        <li class="active"><a href="{{ breadcrumb_url }}">{{ breadcrumb_name }}</a></li>
+      {% else %}
+        <li><a href="{{ breadcrumb_url }}">{{ breadcrumb_name }}</a></li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+{% endblock %}
+
+{% block bootstrap_theme %}
+    <link rel="stylesheet" href="http://bootswatch.com/yeti/bootstrap.min.css" type="text/css">
+{% endblock %}

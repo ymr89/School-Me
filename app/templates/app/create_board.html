@@ -1,0 +1,86 @@
+{% extends 'app/boards_base.html' %}
+{% load staticfiles %}
+{% load rest_framework %}
+{% load i18n widget_tweaks %}
+{% load board_extras %}
+{% load threadedcomments_tags %}
+
+{% block boards %}
+
+<!-- set create board tab to active -->
+{% block CreateClass %}class="active"{% endblock %}
+
+{% block CreateContent %}
+	<!-- New board form -->
+    <h2>Create a new board</h2>
+    <form role="form" action="" method="post" name="cbf" class="hidden">
+        {% csrf_token %}
+        {% for field in form %}
+            <br>
+            {% if field.errors %}
+                <div class="form-group has-error">
+                    <label class="col-sm-2 control-label" for="id_{{ field.name }}">
+                    {{ field.label }}</label>
+                    <div class="col-sm-10">
+                        {{ field|attr:"class:form-control" }}
+                        <span class="help-block">
+                        {% for error in  field.errors %}
+                            {{ error }}
+                        {% endfor %}
+                        </span>
+                    </div>
+                </div>
+            {% else %}
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="id_{{ field.name }}">{{ field.label }}</label>
+                    <div class="col-sm-10">
+                        {{ field|attr:"class:form-control" }}
+                        {% if field.help_text %}
+                            <p class="help-block"><small>{{ field.help_text }}</small></p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-primary" value="New Board">{% trans "New Board" %}</button><br>
+            </div>
+        </div>
+    </form>
+    <div class="input-group">
+        <input type="text" class="form-control" id="fake_field">
+        <div class="input-group-btn">
+            <button id="dropButton" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 88px;">Public <span class="caret"></span></button>
+            <ul class="dropdown-menu">
+                <li><a onclick="privacy_control('id_board_privacy', '0')">Public</a></li>
+                <li><a onclick="privacy_control('id_board_privacy', '1')">Private</a></li>
+            </ul>
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#myModal" style="height: 39px;">
+                <span class="glyphicon glyphicon-question-sign"></span>
+            </button>
+        </div>
+	</div> <br>
+        <button class="btn btn-primary" onclick="create_board()">New Board</button>
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Privacy</h4>
+      </div>
+      <div class="modal-body">
+        <b>Public boards</b> are visible to any School-Me user; anyone can join.
+        <br>
+        <br>
+        <b>Private boards</b> are not indexed in board search results. Board members must be invited in order to join.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-dismiss="modal">Okay, cool</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% endblock %}

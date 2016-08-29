@@ -24,6 +24,8 @@ Django 1.9.6
 
 PostgreSQL 9.5 or MySQL on Azure
 
+Angular js
+
 ## **Development**
 
 To develop School-Me website, download or clone the repository 
@@ -37,5 +39,14 @@ To develop School-Me website, download or clone the repository
 +	Git
 +	Python Tools for Visual Studio (PTVS) This is optional. 
 
+**Windows** 
+
+If you don’t already have Python 2.7, you can get it from [python.org](https://www.python.org/download/releases/2.7/). Alternatively, we recommend installing [Azure SDK for Python 2.7] (https://azure.microsoft.com/en-us/develop/python/) using the Web Platform installer, which will install Python, setuptools, pip and virtualenv.
+
+For Git, we recommend GitHub for Windows. If you use Visual Studio, you can use the integrated Git Support with the [Python Tools 2.2 for Visual Studio] (https://github.com/Microsoft/PTVS/releases/v2.2.4).
+
+**Mac/Linux**
+
+You should have Python and Git already installed, make sure the version is 2.7. If you want to download the 2.7 python version, please refer to [this](https://www.python.org/download/releases/2.7/) website. 
 
 

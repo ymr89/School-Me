@@ -56,8 +56,8 @@ You should have Python and Git already installed, make sure the version is 2.7. 
 Here is an overview of the folders you’ll find in the Git repository, which you’ll clone in the next section.
 
 + Main sources for the application. Consists of 4 pages (index, about, blog, contact) with a master layout. Static content and scripts include bootstrap, jquery and respond.  
-![1](https://github.com/ymr89/MsBlog/blob/master/Images-README/1.jpg)
-![2](https://github.com/ymr89/MsBlog/blob/master/Images-README/2.jpg)
+![1](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/1.png)
+![2](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/2.png)
 
 + Local management and development server support. Use this to run the application locally, synchronize the database, and create super user.  
 ![3](https://github.com/ymr89/MsBlog/blob/master/Images-README/3.png)

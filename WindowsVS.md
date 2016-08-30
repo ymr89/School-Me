@@ -47,7 +47,7 @@ Once you have logged in, you can create boards in your _boards tab_.
 ![16](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/19.PNG)
 You can send emails to users or check your emails in your _messages tab_.  
 ![17](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/16.PNG)  
-If you want to control the whole application, access to _/admin/. As you set the super user, you'll be able to see messages of users and add users as your convenience. 
+If you want to control the whole application, access to _/admin/. As you set the super user, you'll be able to see messages of users and add users as your convenience.  
 ![19](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/15.PNG)  
 After you’ve tested your changes, commit to the Git repository. 
 

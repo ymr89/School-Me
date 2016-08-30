@@ -24,6 +24,9 @@ Engine for PostgreSQL: _'django.db.backends.postgresql_psycopg2'_
 Engine for MySQL: _'django.db.backends.mysql'_  
 ![11](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/11.png)
 
++ *Change the email server for the application.*
+The application is using Django email backend to receive emails. If you would like to change the email server, go to _settings.py_. Find EMAIL_BACKEND.
+
 + *Migrate and create a superuser.*  
 To migrate the information into the new database, right-click on the root project, select python and click-on migrate.  
 ![12](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/12.png)  

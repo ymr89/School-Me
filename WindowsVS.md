@@ -25,7 +25,8 @@ Engine for MySQL: _'django.db.backends.mysql'_
 ![11](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/11.png)
 
 + *Change the email server for the application.*
-The application is using Django email backend to receive emails. If you would like to change the email server, go to _settings.py_. Find EMAIL_BACKEND.
+The application is using Django email backend to receive emails. If you would like to change the email server, go to _settings.py_. Find EMAIL_BACKEND and change the default to _'django.core.mail.backends.smtp.EmailBackend'_. Configure the email server, username and password as desired. If you want to use Django email backend, leave it as it is.  
+![18](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/18.PNG) 
 
 + *Migrate and create a superuser.*  
 To migrate the information into the new database, right-click on the root project, select python and click-on migrate.  
@@ -43,9 +44,10 @@ Now you can experiment by making changes to the application sources and/or templ
 You can create an account by clicking on _Sign Up_ or accesing _/signup/_. 
 ![15](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/17.PNG)  
 Once you have logged in, you can create boards in your _boards tab_.  
-![16](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/15.PNG)
+![16](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/19.PNG)
 You can send emails to users or check your emails in your _messages tab_.  
 ![17](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/16.PNG)  
+If you want to control the whole application, access to _/admin/. As you set the super user, you'll be able to see messages of users and add users as your convenience.  
 After you’ve tested your changes, commit to the Git repository. 
 
 + *Deploy to Azure.*  

@@ -77,7 +77,7 @@ You can launch the application running the following command:
 ```
 python manage.py runserver
 ``` 
-![18](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/20.PNG)
+![20](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/20.PNG)
 
 Then, you can open the browser to the URL. 
 

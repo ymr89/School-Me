@@ -88,7 +88,7 @@ python manage.py runserver
 
 Then, you can open the browser to the URL. 
 
-![19](https://github.com/ymr89/MsBlog/blob/master/Images-README/21.PNG)
+![19](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/21.PNG)
 
 + *Make changes.*  
 Now you can experiment by making changes to the application sources and/or templates.  

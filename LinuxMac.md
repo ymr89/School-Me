@@ -53,7 +53,12 @@ Scroll down until you find the DATABASES. Change the information according to yo
 Engine for PostgreSQL: _'django.db.backends.postgresql_psycopg2'_  
 Engine for MySQL: _'django.db.backends.mysql'_  
 
-![11](https://github.com/ymr89/MsBlog/blob/master/Images-README/11.png)
+![11](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/11.png)
+
++ *Change the email server for the application.*
+The application is using Django email backend to receive emails. If you would like to change the email server, inside _settings.py_. Find EMAIL_BACKEND and change the default to _'django.core.mail.backends.smtp.EmailBackend'_. Configure the email server, username and password as desired. If you want to use Django email backend, leave it as it is.  
+
+![18](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/18.PNG) 
 
 Don’t forget to _cd .._ to go back into the main folder after you saved the changes in your setting.py file. 
 
@@ -79,22 +84,30 @@ You can launch the application running the following command:
 ```
 python manage.py runserver
 ``` 
-![18](https://github.com/ymr89/MsBlog/blob/master/Images-README/18.png)
+![20](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/20.PNG)
 
 Then, you can open the browser to the URL. 
 
 ![19](https://github.com/ymr89/MsBlog/blob/master/Images-README/19.PNG)
 
 + *Make changes.*  
-Now you can experiment by making changes to the application sources and/or templates. To access the admin page to add users, or add new posts, access through _/admin/_.
+Now you can experiment by making changes to the application sources and/or templates.  
+You can create an account by clicking on _Sign Up_ or accesing _/signup/_. 
 
-![15](https://github.com/ymr89/MsBlog/blob/master/Images-README/15.png) 
+![15](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/17.PNG)  
 
-Once you have logged in, you can either add posts through the admins page or in the website as _/posts/create/_.
+Once you have logged in, you can create boards in your _boards tab_.  
 
-![16](https://github.com/ymr89/MsBlog/blob/master/Images-README/16.png)  
+![16](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/19.PNG)
+
+You can send emails to users or check your emails in your _messages tab_.  
+
+![17](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/16.PNG)  
+
+If you want to control the whole application, access to _/admin/. As you set the super user, you'll be able to see messages of users and add users as your convenience.  
+
+![19](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/15.PNG)   
  
-
 After you’ve tested your changes, commit them to the Git repository:
 
 ``` 

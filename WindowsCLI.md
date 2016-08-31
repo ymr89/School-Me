@@ -42,7 +42,7 @@ Scroll down until you find the DATABASES. Change the information according to yo
 Engine for PostgreSQL: _'django.db.backends.postgresql_psycopg2'_  
 Engine for MySQL: _'django.db.backends.mysql'_  
 
-![11](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/11.PNG)
+![11](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/11.png)
 
 Don’t forget to _cd .._ to go back into the main folder after you saved the changes in your setting.py file. 
 

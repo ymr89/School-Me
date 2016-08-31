@@ -42,13 +42,22 @@ Scroll down until you find the DATABASES. Change the information according to yo
 Engine for PostgreSQL: _'django.db.backends.postgresql_psycopg2'_  
 Engine for MySQL: _'django.db.backends.mysql'_  
 
-![11](https://github.com/ymr89/MsBlog/blob/master/Images-README/11.png)
+![11](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/11.PNG)
 
 Don’t forget to _cd .._ to go back into the main folder after you saved the changes in your setting.py file. 
 
 ```
 cd ..
 ```
+
++ *Change the email server for the application.*
+The application is using Django email backend to receive emails. If you would like to change the email server, go to _settings.py_. Find EMAIL_BACKEND and change the default to _'django.core.mail.backends.smtp.EmailBackend'_. Configure the email server, username and password as desired. If you want to use Django email backend, leave it as it is.  
+```
+cd MsBlog  
+idle settings.py  
+```  
+
+![18](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/18.PNG) 
 
 + *Migrate and create a superuser.*  
 Run this from the command-line from your project folder to migrate the information: 

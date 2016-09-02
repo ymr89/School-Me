@@ -22,7 +22,7 @@ In the command line, type requirements.txt.
 ```
 requirements.txt
 ```  
-If you’re using a PostgreSQL database, add _psycopg2==2.6.2_. If you’re using a MySQL database, add _MySQL-python==1.2.3_. By default, requirements.txt contains the driver for a PostgreSQL database.  
+If you’re using a PostgreSQL database, add _psycopg2==2.6.2_. If you’re using a MySQL database, add _mysqlclient==1.3.7_. By default, requirements.txt contains the driver for a PostgreSQL database.  
 
 Install any external packages required by the application. 
 

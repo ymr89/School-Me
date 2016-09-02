@@ -9,7 +9,7 @@ Open the solution file (.sln) that is included in the root of the repository.
 
 + *Change the requirements file.*  
 Double-click on requirements.txt. If you’re using a PostgreSQL database, add _psycopg2==2.6.2_.  
-If you’re using a MySQL database, add _MySQL-python==1.2.3_. By default, requirements.txt contains the driver for a PostgreSQL database.  
+If you’re using a MySQL database, add _mysqlclient==1.3.7_. By default, requirements.txt contains the driver for a PostgreSQL database.  
 ![8](https://github.com/ymr89/School-Me/blob/master/imagesReadMe/8.PNG)
 
 + *Create a virtual environment.*  

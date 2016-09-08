@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = '4ca2c121-6365-48b9-8fed-020505eec0cf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG  = True
 
 ALLOWED_HOSTS = []
 
@@ -97,11 +97,12 @@ DATABASES = {
         #'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
 
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'schoolMe',
-        'USER': 'postgres@crmofficial',
-        'PASSWORD': 'Yukon900',
-        'HOST': 'crmofficial.sqltest-eg1.mscds.com',
+        'NAME': '<Your database name>',
+        'USER': '<Your username>',
+        'PASSWORD': '<Your password>',
+        'HOST': '<your server>.mscds.com',
         'PORT': '5432',
+
     }
 }
 

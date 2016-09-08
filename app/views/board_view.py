@@ -239,7 +239,7 @@ def discussion(request, board):
 				body = 'View discussion post at: ' + body + '\n\n' + feedback_link
 				if SEND_EMAILS:
 					for admin in boardAdmins:
-						send_mail('New Post From ' + boardObj.board_name + ': ' + title, body, 'intuna@no-reply.com', [admin.email], fail_silently=False,)
+						send_mail('New Post From ' + boardObj.board_name + ': ' + title, body, 'schoolme@no-reply.com', [admin.email], fail_silently=False,)
 				return redirect('/' + boardObj.board_name + '/discussion/')
 		else:
 			# Filter discussion posts; includes search query

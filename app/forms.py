@@ -62,7 +62,7 @@ class EditAnnouncementForm(forms.Form):
 	end_date = forms.DateField(label='Expires', widget=forms.TextInput(attrs={'class':'datepicker form-control'}))
 
 class FeedbackForm(forms.Form):
-	CHOICES = (('0', 'Clarification'), ('1', 'Explanation'))
+	CHOICES = (('0', 'Question'), ('1', 'Clarification'))
 	title = forms.CharField(label='Title')
 	feedbackType = forms.ChoiceField(initial=0, label='Type', choices=CHOICES, required=True)
 	body = forms.CharField(label='Body', widget=forms.Textarea(attrs={'id':'form-body'}))
@@ -92,7 +92,7 @@ class TagForm(forms.Form):
 	tag = forms.CharField(label='Tag')
 
 class FilterForm(forms.Form):
-	POSTCHOICES = (('0', 'All'), ('1', 'Clarification'), ('2', 'Explanation'))
+	POSTCHOICES = (('0', 'All'), ('1', 'Questions'), ('2', 'Clarification'))
 	postType = forms.ChoiceField(initial=0, label='Posts', choices=POSTCHOICES, required=False, widget=forms.Select(attrs={"onChange":'this.form.submit();'}))
 	FILTERCHOICES = (('0', 'Most Recent'), ('1', 'Popularity'), ('2', 'Oldest'))
 	filterType = forms.ChoiceField(initial=0, label='Filter By', choices=FILTERCHOICES, required=False, widget=forms.Select(attrs={"onChange":'this.form.submit();'}))

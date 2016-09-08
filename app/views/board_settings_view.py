@@ -64,7 +64,7 @@ def board_settings(request, board):
 				new_email_token = Email_Token(email=email_string, token=token.hexdigest(), board=boardObj, expiration_date=datetime.now()+timedelta(days=3))
 				signup_link = 'http://' + request.META['HTTP_HOST'] + '/' + token.hexdigest() + '/signup/'
 				if SEND_EMAILS:
-					send_mail('Invitation to join ' + board + '!', 'Click the following link to sign up and join ' + board + ': ' + signup_link, 'intuna@no-reply.com', [email_string], fail_silently=False,)
+					send_mail('Invitation to join ' + board + '!', 'Click the following link to sign up and join ' + board + ': ' + signup_link, 'schoolme@no-reply.com', [email_string], fail_silently=False,)
 				new_email_token.save()
 
 	##### PAGINATION #####
@@ -176,7 +176,7 @@ def delete_board(request, board):
 		group.delete()
 	Board.groups.through.objects.filter(board_id=boardObj.id).delete()
 	boardObj.delete()
-	return boards(request)
+	return redirect('/boards/')
 
 # Make Admin - makes an existing board member an admin '/makeadmin/<profile_id>/'
 # Parameters 

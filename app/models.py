@@ -65,7 +65,7 @@ class Feedback(models.Model):
 	feedback_file = models.FileField(blank=True)
 	feedback_user = models.ForeignKey(Profile, on_delete=models.CASCADE)
 	feedback_board = models.ForeignKey(Board, on_delete=models.CASCADE)
-	feedback_status = models.ForeignKey(Status, on_delete=models.CASCADE) ##SHOULD DELETE THIS, DELETE TO TEST DB UPGRADE
+	feedback_status = models.ForeignKey(Status, on_delete=models.CASCADE) 
 	feedback_upvotes = models.IntegerField(default=0)
 	feedback_downvotes = models.IntegerField(default=0)
 

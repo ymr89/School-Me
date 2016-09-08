@@ -72,6 +72,13 @@ python manage.py createsuperuser
 ```  
 Follow the prompts to set the user name, password, etc. 
 
++ *Collect static files.*  
+Run this from the command-line from your project folder to collect the static files:
+
+```
+python manage.py collectstatic
+```
+
 + *Run using development server.*  
 You can launch the application running the following command:  
 ```
